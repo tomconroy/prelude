@@ -1,3 +1,5 @@
+;;; config --- custom config file
+
 (setq default-frame-alist '((font . "Operator Mono-13")))
 
 (setq standard-indent 2
@@ -69,3 +71,7 @@
 (eval-after-load 'company
   '(add-to-list 'company-backends 'company-tern))
 (setq company-dabbrev-downcase nil)
+
+(require 'prettier-js)
+
+(exec-path-from-shell-initialize)
