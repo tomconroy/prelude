@@ -1,12 +1,13 @@
 ;;; config --- custom config file
 
-(setq default-frame-alist '((font . "Operator Mono-13")))
+(setq default-frame-alist '((font . "Operator Mono-14")))
 
 (setq standard-indent 2
       css-indent-offset 2
       js-indent-level 2
       nginx-indent-level 2)
 
+(prelude-require-package 'js2-mode)
 (require 'js2-mode)
 (setq js2-basic-offset 2
       js2-strict-missing-semi-warning nil
@@ -16,16 +17,19 @@
       js2-bounce-indent-p t)
 
 ;; better scrolling
+(prelude-require-package 'smooth-scroll)
 (require 'smooth-scroll)
 (smooth-scroll-mode t)
 (setq smooth-scroll/hscroll-step-size 12)
 (setq smooth-scroll/vscroll-step-size 12)
 
+(prelude-require-package 'smooth-scrolling)
 (require 'smooth-scrolling)
 (smooth-scrolling-mode t)
 (setq recenter-positions '(middle top))
 (setq next-screen-context-lines 10)
 
+(prelude-require-package 'flycheck)
 (require 'flycheck)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (setq-default flycheck-disabled-checkers
@@ -48,6 +52,7 @@
 (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
 
 
+(prelude-require-package 'web-mode)
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
 (setq web-mode-attr-indent-offset 2
@@ -67,6 +72,7 @@
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
 
+(prelude-require-package 'company-tern)
 (require 'company-tern)
 (eval-after-load 'company
   '(add-to-list 'company-backends 'company-tern))
