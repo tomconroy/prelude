@@ -51,7 +51,6 @@
 
 (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
 
-
 (prelude-require-package 'web-mode)
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
@@ -61,10 +60,6 @@
       web-mode-css-indent-offset 2
       web-mode-code-indent-offset 2
       web-mode-attr-indent-offset 2)
-
-(add-hook 'web-mode-hook
-          (lambda ()
-            (web-mode-set-content-type "jsx")))
 
 (setq line-spacing 1)
 
@@ -81,3 +76,12 @@
 (require 'prettier-js)
 
 (exec-path-from-shell-initialize)
+
+(add-hook 'web-mode-hook
+          (lambda ()
+            (web-mode-set-content-type "jsx")
+            (tern-mode)
+            (company-mode)
+            (smartparens-mode)))
+
+(setq exec-path (append exec-path '("~/.nvm/versions/node/v8.9.4/bin/")))
