@@ -54,6 +54,7 @@
 (prelude-require-package 'web-mode)
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html\\.eex\\'" . web-mode))
 (setq web-mode-attr-indent-offset 2
       web-mode-attr-value-indent-offset 2
       web-mode-markup-indent-offset 2
@@ -77,13 +78,18 @@
 
 (exec-path-from-shell-initialize)
 
+(add-hook 'web-mode-hook 'web-mode-hooks)
+(defun web-mode-hooks ()
+  (cond
+   ((string= (file-name-extension buffer-file-name) "js")
+    (progn
+      (web-mode-set-content-type "jsx")
+      (tern-mode)
+      (company-mode)
+      (smartparens-mode)))
 
-(add-hook 'web-mode-hook
-          (lambda ()
-            (web-mode-set-content-type "jsx")
-            (tern-mode)
-            (company-mode)
-            (smartparens-mode)))
+   ((string= (file-name-extension buffer-file-name) "eex")
+    (web-mode-set-engine "elixir"))))
 
 (setq exec-path (append exec-path '("~/.nvm/versions/node/v8.9.4/bin/")))
 
