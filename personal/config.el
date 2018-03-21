@@ -77,6 +77,7 @@
 
 (exec-path-from-shell-initialize)
 
+
 (add-hook 'web-mode-hook
           (lambda ()
             (web-mode-set-content-type "jsx")
@@ -85,3 +86,6 @@
             (smartparens-mode)))
 
 (setq exec-path (append exec-path '("~/.nvm/versions/node/v8.9.4/bin/")))
+
+(prelude-require-package 'wakatime-mode)
+(global-wakatime-mode)
