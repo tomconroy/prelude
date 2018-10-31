@@ -5,7 +5,8 @@
 (setq standard-indent 2
       css-indent-offset 2
       js-indent-level 2
-      nginx-indent-level 2)
+      nginx-indent-level 2
+      tab-width 2)
 
 (prelude-require-package 'js2-mode)
 (require 'js2-mode)
@@ -73,15 +74,69 @@
   '(add-to-list 'company-backends 'company-tern))
 (setq company-dabbrev-downcase nil)
 
-(require 'prettier-js)
-
 (exec-path-from-shell-initialize)
+
+(defun enable-minor-mode (my-pair)
+  "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
+  (if (buffer-file-name)
+      (if (string-match (car my-pair) buffer-file-name)
+          (funcall (cdr my-pair)))))
 
 (add-hook 'web-mode-hook
           (lambda ()
+            (add-node-modules-path)
             (web-mode-set-content-type "jsx")
-            (tern-mode)
+            '("\\.jsx?\\'" . tern-mode)
             (company-mode)
-            (smartparens-mode)))
+            (smartparens-mode)
+            '("\\.tsx?\\'" . setup-tide-mode)
+            '("\\.tsx?\\'" . prettier-js-mode)))
 
-(setq exec-path (append exec-path '("~/.nvm/versions/node/v8.9.4/bin/")))
+(setq exec-path (append exec-path '("~/.nvm/versions/node/v8.11.3/bin/")))
+
+;; WAKATIME -------
+
+(prelude-require-package 'wakatime-mode)
+(global-wakatime-mode)
+
+;; CIDER -------
+
+(global-set-key (kbd "C-c C-p") 'cider-pprint-eval-last-sexp)
+
+;; TYPESCRIPT -------
+
+(prelude-require-package 'tide)
+
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+
+(add-to-list 'auto-mode-alist '("\\.tsx?\\'" . web-mode))
+
+;; enable typescript-tslint checker
+(flycheck-add-mode 'typescript-tslint 'web-mode)
+
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (or (string-equal "ts" (file-name-extension buffer-file-name))
+                      (string-equal "tsx" (file-name-extension buffer-file-name)))
+              (setup-tide-mode))))
+
+;; PRETTIER -------
+
+(prelude-require-package 'prettier-js)
+
+(prelude-require-package 'add-node-modules-path)
