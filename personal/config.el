@@ -5,7 +5,8 @@
 (setq standard-indent 2
       css-indent-offset 2
       js-indent-level 2
-      nginx-indent-level 2)
+      nginx-indent-level 2
+      typescript-indent-level 2)
 
 (prelude-require-package 'js2-mode)
 (require 'js2-mode)
@@ -74,6 +75,7 @@
   '(add-to-list 'company-backends 'company-tern))
 (setq company-dabbrev-downcase nil)
 
+(prelude-require-package 'prettier-js)
 (require 'prettier-js)
 
 (exec-path-from-shell-initialize)
@@ -81,17 +83,20 @@
 (add-hook 'web-mode-hook 'web-mode-hooks)
 (defun web-mode-hooks ()
   (cond
-   ((string= (file-name-extension buffer-file-name) "js")
+   ((string-match "[jt]sx?" (file-name-extension buffer-file-name))
     (progn
       (web-mode-set-content-type "jsx")
       (tern-mode)
       (company-mode)
-      (smartparens-mode)))
+      (smartparens-mode)
+      (prettier-js-mode)))
 
    ((string= (file-name-extension buffer-file-name) "eex")
     (web-mode-set-engine "elixir"))))
 
-(setq exec-path (append exec-path '("~/.nvm/versions/node/v8.9.4/bin/")))
-
 (prelude-require-package 'wakatime-mode)
 (global-wakatime-mode)
+
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+
+(setq exec-path (append exec-path '("~/.nvm/versions/node/v8.15.1/bin/")))
