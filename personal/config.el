@@ -80,13 +80,23 @@
 
 (exec-path-from-shell-initialize)
 
-(add-hook 'web-mode-hook 'web-mode-hooks)
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  (company-mode +1))
+
+
 (defun web-mode-hooks ()
   (cond
-   ((string-match "[jt]sx?" (file-name-extension buffer-file-name))
+   ((string-match "[jt]sx" (file-name-extension buffer-file-name))
     (progn
       (web-mode-set-content-type "jsx")
       (tern-mode)
+      (setup-tide-mode)
       (company-mode)
       (smartparens-mode)
       (prettier-js-mode)))
@@ -94,9 +104,17 @@
    ((string= (file-name-extension buffer-file-name) "eex")
     (web-mode-set-engine "elixir"))))
 
+(add-hook 'web-mode-hook 'web-mode-hooks)
+
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+
+(setq company-tooltip-align-annotations t)
+
 (prelude-require-package 'wakatime-mode)
 (global-wakatime-mode)
 
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
 
-(setq exec-path (append exec-path '("~/.nvm/versions/node/v8.15.1/bin/")))
+(setq exec-path (append exec-path '("~/.nvm/versions/node/v12.16.1/bin/")))
+
+(setq reb-re-syntax 'string)
